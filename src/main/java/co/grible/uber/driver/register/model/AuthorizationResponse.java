@@ -22,17 +22,6 @@ public class AuthorizationResponse {
 
     private String scope;
 
-    public AuthorizationResponse() {}
-
-    public AuthorizationResponse(Long lastAuthenticated, String accessToken, String tokenType, Long expiresIn, String refreshToken, String scope) {
-        this.lastAuthenticated = lastAuthenticated;
-        this.accessToken = accessToken;
-        this.tokenType = tokenType;
-        this.expiresIn = expiresIn;
-        this.refreshToken = refreshToken;
-        this.scope = scope;
-    }
-
     public Long getLastAuthenticated() {
         return lastAuthenticated;
     }

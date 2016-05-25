@@ -36,13 +36,14 @@ public class DriverRegistrationController {
     }
 
     @RequestMapping(value = "/hookmeup", method = RequestMethod.GET)
-    public String registerRider(@RequestParam(value = "code", required = false) String code) throws IOException {
+    public String registerRider(@RequestParam(value = "code", required = false) String code, Map<String, Object> model) throws IOException {
 
 
         AuthorizationResponse response = retrieveAuthorisationConfirmation(code);
 
         retrieveUserInformation(response.getAccessToken());
 
+        model.put("result", response.getAccessToken());
 
         return "success";
 

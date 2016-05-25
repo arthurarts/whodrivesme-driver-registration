@@ -10,7 +10,9 @@
 <body>
 <h1>Register as a rider successful</h1>
 
-You will be updated about driver info, once you start driving with UBER.
+<p>You will be updated about driver info, once you start driving with UBER.</p>
+
+<p>Token:<br> ${result}</p>
 </body>
 
 </html>
