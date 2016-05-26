@@ -25,7 +25,7 @@ import org.springframework.web.client.RestTemplate;
 @Controller
 public class DriverRegistrationController {
 
-    private static String url = "https://login.uber.com/oauth/v2/token";
+    private static String AUTHORIZATIONURL = "https://login.uber.com/oauth/v2/token";
     private RestTemplate restTemplate = new RestTemplate();
 
     @RequestMapping(value = "/register-rider", method = RequestMethod.GET)
@@ -39,13 +39,12 @@ public class DriverRegistrationController {
     public String registerRider(@RequestParam(value = "code", required = false) String code, Map<String, Object> model) throws IOException {
 
 
-        AuthorizationResponse response = retrieveAuthorisationConfirmation(code);
+        AuthorizationResponse authorizationResponse = retrieveAuthorisationConfirmation(code);
+        UserInformation userInfo =  retrieveUserInformation(authorizationResponse.getAccessToken());
 
-        retrieveUserInformation(response.getAccessToken());
+        model.put("authorizationResponse", authorizationResponse);
 
-        model.put("result", response.getAccessToken());
-
-        return "success";
+        return "complete-details";
 
     }
 
@@ -56,12 +55,12 @@ public class DriverRegistrationController {
         urlParameters.add(new BasicNameValuePair("client_id", "wrM46LuAXxFP4CqmeaOX4wlO66g0ZsMI"));
         urlParameters.add(new BasicNameValuePair("client_secret", "1w0-YUL5d4XMZAhY4yhJWX1G6dWg-YvWTAO3f5kX"));
         urlParameters.add(new BasicNameValuePair("grant_type", "authorization_code"));
-        urlParameters.add(new BasicNameValuePair("url", url));
+        urlParameters.add(new BasicNameValuePair("AUTHORIZATIONURL", AUTHORIZATIONURL));
         urlParameters.add(new BasicNameValuePair("redirect_uri", "http://localhost:9000/hookmeup"));
         urlParameters.add(new BasicNameValuePair("code", code));
 
         HttpClient client = HttpClientBuilder.create().build();
-        HttpPost post = new HttpPost(url);
+        HttpPost post = new HttpPost(AUTHORIZATIONURL);
         post.setEntity(new UrlEncodedFormEntity(urlParameters));
 
         HttpResponse response = client.execute(post);
@@ -71,7 +70,23 @@ public class DriverRegistrationController {
         return mapper.readValue(result, AuthorizationResponse.class);
     }
 
-    private UserInformation retrieveUserInformation(final String accessToken) {
+    private UserInformation retrieveUserInformation(final String accessToken) throws IOException {
+
+        List<NameValuePair> urlParameters = new ArrayList<NameValuePair>();
+        urlParameters.add(new BasicNameValuePair("client_id", "wrM46LuAXxFP4CqmeaOX4wlO66g0ZsMI"));
+        urlParameters.add(new BasicNameValuePair("client_secret", "1w0-YUL5d4XMZAhY4yhJWX1G6dWg-YvWTAO3f5kX"));
+        urlParameters.add(new BasicNameValuePair("grant_type", "authorization_code"));
+        urlParameters.add(new BasicNameValuePair("AUTHORIZATIONURL", AUTHORIZATIONURL));
+        urlParameters.add(new BasicNameValuePair("redirect_uri", "http://localhost:9000/hookmeup"));
+//        urlParameters.add(new BasicNameValuePair("code", code));
+
+        HttpClient client = HttpClientBuilder.create().build();
+        HttpPost post = new HttpPost(AUTHORIZATIONURL);
+        post.setEntity(new UrlEncodedFormEntity(urlParameters));
+
+        HttpResponse response = client.execute(post);
+
+        String result = EntityUtils.toString(response.getEntity());
         return null;
     }
 

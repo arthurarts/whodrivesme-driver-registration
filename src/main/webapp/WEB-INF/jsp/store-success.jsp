@@ -12,7 +12,7 @@
 
 <p>You will be updated about driver info, once you start driving with UBER.</p>
 
-<p>Token:<br> ${result}</p>
+<p>${result}</p>
 </body>
 
 </html>
